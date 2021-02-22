@@ -13574,7 +13574,6 @@ sequence_length = 4</code></pre>
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="k">import</span> <span class="n">TensorDataset</span><span class="p">,</span> <span class="n">DataLoader</span>
 
-
 <span class="k">def</span> <span class="nf">batch_data</span><span class="p">(</span><span class="n">words</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Batch the neural network data using DataLoader</span>
@@ -13583,25 +13582,71 @@ sequence_length = 4</code></pre>
 <span class="sd">    :param batch_size: The size of each batch; the number of sequences in a batch</span>
 <span class="sd">    :return: DataLoader with batched data</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># TODO: Implement function</span>
+    <span class="c1"># TODO: Implement function  </span>
+
+    <span class="c1">#compute the number of batches</span>
+    <span class="n">number_batches</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">/</span><span class="n">batch_size</span><span class="p">)</span>
     
-    <span class="n">num_batches</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">-</span><span class="n">sequence_length</span><span class="o">-</span><span class="mi">1</span>
-    <span class="n">feature_tensors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_batches</span><span class="p">,</span> <span class="n">sequence_length</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="n">target_sensors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_batches</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">lower</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">-</span><span class="n">sequence_length</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="n">feature_tensors</span><span class="p">[</span><span class="n">lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">lower</span><span class="p">:</span><span class="n">lower</span><span class="o">+</span><span class="n">sequence_length</span><span class="p">]</span>
-        <span class="n">target_sensors</span><span class="p">[</span><span class="n">lower</span><span class="p">]</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">lower</span><span class="o">+</span><span class="n">sequence_length</span><span class="p">]</span>
+    <span class="n">features</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+    
+    <span class="k">for</span> <span class="n">counter</span> <span class="ow">in</span> <span class="nb">range</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span><span class="o">-</span><span class="n">sequence_length</span><span class="p">):</span>
+    
+        <span class="n">feature</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">counter</span><span class="p">:</span> <span class="n">sequence_length</span> <span class="o">+</span> <span class="n">counter</span><span class="p">]</span>
+        <span class="n">target</span> <span class="o">=</span>  <span class="n">words</span><span class="p">[</span><span class="n">sequence_length</span> <span class="o">+</span> <span class="n">counter</span><span class="p">]</span>
         
-    <span class="n">data</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">feature_tensors</span><span class="p">),</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">target_sensors</span><span class="p">))</span>
-    <span class="n">data_loader</span> <span class="o">=</span> <span class="n">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">batch_size</span> <span class="o">=</span> <span class="n">batch_size</span><span class="p">)</span>
+        <span class="n">features</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">feature</span><span class="p">)</span>
+        <span class="n">targets</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+        
+    <span class="nb">print</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+        
+    <span class="n">data</span> <span class="o">=</span> <span class="n">TensorDataset</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">features</span><span class="p">)),</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">targets</span><span class="p">)))</span>
+    <span class="n">data_loader</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">DataLoader</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">batch_size</span><span class="o">=</span><span class="n">batch_size</span><span class="p">)</span>
     
-    <span class="k">return</span> <span class="n">data_loader</span>   
+    <span class="c1">#return a dataloader</span>
+    <span class="k">return</span> <span class="n">data_loader</span>
 
 <span class="c1"># there is no test for this function, but you are encouraged to create</span>
 <span class="c1"># print statements and tests of your own</span>
+<span class="n">batch_data</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">batch_data</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">9</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">9</span><span class="p">],</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>[[1, 3, 5, 3, 6], [3, 5, 3, 6, 5], [5, 3, 6, 5, 3], [3, 6, 5, 3, 4], [6, 5, 3, 4, 5], [5, 3, 4, 5, 7], [3, 4, 5, 7, 9], [4, 5, 7, 9, 7], [5, 7, 9, 7, 7], [7, 9, 7, 7, 8], [9, 7, 7, 8, 2]]
+[5, 3, 4, 5, 7, 9, 7, 7, 8, 2, 9]
+[[1, 3, 5, 3, 6, 5, 3], [3, 5, 3, 6, 5, 3, 4], [5, 3, 6, 5, 3, 4, 5], [3, 6, 5, 3, 4, 5, 7], [6, 5, 3, 4, 5, 7, 9], [5, 3, 4, 5, 7, 9, 7], [3, 4, 5, 7, 9, 7, 7], [4, 5, 7, 9, 7, 7, 8], [5, 7, 9, 7, 7, 8, 2]]
+[4, 5, 7, 9, 7, 7, 8, 2, 9]
+</pre>
+</div>
+</div>
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[8]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;torch.utils.data.dataloader.DataLoader at 0x7f5467387e80&gt;</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13667,20 +13712,22 @@ tensor([ 33,  26,  22,  39,  16,  28,  11,  43,  30,  12])</code></pre>
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>torch.Size([10, 5])
-tensor([[ 18,  19,  20,  21,  22],
-        [ 35,  36,  37,  38,  39],
-        [ 19,  20,  21,  22,  23],
-        [ 38,  39,  40,  41,  42],
-        [ 40,  41,  42,  43,  44],
-        [ 21,  22,  23,  24,  25],
-        [ 16,  17,  18,  19,  20],
-        [ 28,  29,  30,  31,  32],
-        [ 10,  11,  12,  13,  14],
-        [ 32,  33,  34,  35,  36]])
+<pre>[range(0, 5), range(1, 6), range(2, 7), range(3, 8), range(4, 9), range(5, 10), range(6, 11), range(7, 12), range(8, 13), range(9, 14), range(10, 15), range(11, 16), range(12, 17), range(13, 18), range(14, 19), range(15, 20), range(16, 21), range(17, 22), range(18, 23), range(19, 24), range(20, 25), range(21, 26), range(22, 27), range(23, 28), range(24, 29), range(25, 30), range(26, 31), range(27, 32), range(28, 33), range(29, 34), range(30, 35), range(31, 36), range(32, 37), range(33, 38), range(34, 39), range(35, 40), range(36, 41), range(37, 42), range(38, 43), range(39, 44), range(40, 45), range(41, 46), range(42, 47), range(43, 48), range(44, 49)]
+[5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49]
+torch.Size([10, 5])
+tensor([[  0,   1,   2,   3,   4],
+        [  1,   2,   3,   4,   5],
+        [  2,   3,   4,   5,   6],
+        [  3,   4,   5,   6,   7],
+        [  4,   5,   6,   7,   8],
+        [  5,   6,   7,   8,   9],
+        [  6,   7,   8,   9,  10],
+        [  7,   8,   9,  10,  11],
+        [  8,   9,  10,  11,  12],
+        [  9,  10,  11,  12,  13]])
 
 torch.Size([10])
-tensor([ 23,  40,  24,  43,  45,  26,  21,  33,  15,  37])
+tensor([  5,   6,   7,   8,   9,  10,  11,  12,  13,  14])
 </pre>
 </div>
 </div>
@@ -13733,20 +13780,19 @@ out = output[:, -1]</code></pre>
 <span class="sd">        :param dropout: dropout to add in between LSTM/GRU layers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        
-        <span class="c1"># define embedding layer        </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
-        
-        <span class="c1">## Define the LSTM</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
+        <span class="c1"># TODO: Implement function</span>
         <span class="c1"># set class variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         
-        <span class="c1"># Define the final, fully-connected output layer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+        <span class="c1"># define model layers</span>
+        <span class="c1"># embedding layer        </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="c1"># LSTM layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># fully connected layer (final layer)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>      
     
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_input</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -13756,27 +13802,20 @@ out = output[:, -1]</code></pre>
 <span class="sd">        :return: Two Tensors, the output of the neural network and the latest hidden state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: Implement function   </span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">nn_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># embeddings and lstm_out</span>
-        <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">nn_input</span><span class="p">)</span>
-        <span class="n">lstm_out</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embeds</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
-    
-        <span class="c1"># stack up lstm outputs</span>
-        <span class="n">lstm_out</span> <span class="o">=</span> <span class="n">lstm_out</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span>
         
-        <span class="c1"># dropout and fully-connected layer</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">lstm_out</span><span class="p">)</span>
+        <span class="n">batch_length</span> <span class="o">=</span> <span class="n">nn_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># embeddings</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">nn_input</span><span class="p">)</span>
+        <span class="c1"># lstm_out</span>
+        <span class="n">lstm_out</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">lstm_out</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">))</span>
         
-        <span class="c1"># reshape into (batch_size, seq_length, output_size)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
-        <span class="c1"># get last batch</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">hidden</span>
-    
-    
-    <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="c1"># get last batch (with reshaping)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_length</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># return one batch of output word scores and the hidden state</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span>
+        
+    <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Initialize the hidden state of an LSTM/GRU</span>
 <span class="sd">        :param batch_size: The batch_size of the hidden state</span>
@@ -13784,17 +13823,16 @@ out = output[:, -1]</code></pre>
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Implement function</span>
         
-        <span class="c1"># initialize hidden state with zero weights, and move to GPU if available</span>
+        <span class="c1"># initializing hidden state with zero weights</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">data</span>
         
-        <span class="n">weight</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">data</span>
-        
+        <span class="c1">#move to GPU (if available)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">train_on_gpu</span><span class="p">):</span>
-            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span>
-                  <span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">())</span>
+            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span>
+                  <span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">(),</span>
-                      <span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">())</span>
-        
+            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">(),</span>
+                      <span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">hidden</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">DON&#39;T MODIFY ANYTHING IN THIS CELL THAT IS BELOW THIS LINE</span>
@@ -13843,6 +13881,7 @@ out = output[:, -1]</code></pre>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">forward_back_prop</span><span class="p">(</span><span class="n">rnn</span><span class="p">,</span> <span class="n">optimizer</span><span class="p">,</span> <span class="n">criterion</span><span class="p">,</span> <span class="n">inp</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span>
+
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Forward and backward propagation on the neural network</span>
 <span class="sd">    :param decoder: The PyTorch Module that holds the neural network</span>
@@ -13855,34 +13894,36 @@ out = output[:, -1]</code></pre>
     <span class="c1"># move model to GPU, if available</span>
     <span class="k">if</span><span class="p">(</span><span class="n">train_on_gpu</span><span class="p">):</span>
         <span class="n">rnn</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-        
-<span class="c1">#     # Creating new variables for the hidden state, otherwise</span>
-<span class="c1">#     # we&#39;d backprop through the entire training history</span>
-    <span class="n">h</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">each</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">each</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">])</span>
+            
+    <span class="n">hidden</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">([</span><span class="n">cell</span><span class="o">.</span><span class="n">data</span> <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">hidden</span><span class="p">])</span>
 
-    <span class="c1"># zero accumulated gradients</span>
-    <span class="n">rnn</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
-    
     <span class="k">if</span><span class="p">(</span><span class="n">train_on_gpu</span><span class="p">):</span>
         <span class="n">inputs</span><span class="p">,</span> <span class="n">target</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span> <span class="n">target</span><span class="o">.</span><span class="n">cuda</span><span class="p">()</span>
-<span class="c1">#     print(h[0].data)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">inputs</span> <span class="o">=</span> <span class="n">inp</span>
+        
+    <span class="c1">#&quot;zeroing&quot; out the gradients    </span>
+    <span class="n">rnn</span><span class="o">.</span><span class="n">zero_grad</span><span class="p">()</span>
     
-    <span class="c1"># get predicted outputs</span>
-    <span class="n">output</span><span class="p">,</span> <span class="n">h</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">h</span><span class="p">)</span>
+    <span class="c1"># computes the output (and hidden) of the RNN network</span>
+    <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="n">rnn</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
     
-    <span class="c1"># calculate loss</span>
+    <span class="c1">#computes the loss</span>
     <span class="n">loss</span> <span class="o">=</span> <span class="n">criterion</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="n">target</span><span class="p">)</span>
     
-<span class="c1">#     optimizer.zero_grad()</span>
+    <span class="c1">#backpropagation</span>
     <span class="n">loss</span><span class="o">.</span><span class="n">backward</span><span class="p">()</span>
-    <span class="c1"># &#39;clip_grad_norm&#39; helps prevent the exploding gradient problem in RNNs / LSTMs</span>
+        
+    <span class="c1">#returns the norm of the parameter values</span>
     <span class="n">nn</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">clip_grad_norm_</span><span class="p">(</span><span class="n">rnn</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="mi">5</span><span class="p">)</span>
 
+    <span class="c1">#optimization</span>
     <span class="n">optimizer</span><span class="o">.</span><span class="n">step</span><span class="p">()</span>
-    <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">h</span>
+    <span class="c1"># return the loss over a batch and the hidden state produced by our model</span>
+    <span class="k">return</span> <span class="n">loss</span><span class="o">.</span><span class="n">item</span><span class="p">(),</span> <span class="n">hidden</span>
 
+<span class="c1"># Note that these tests aren&#39;t completely extensive.</span>
+<span class="c1"># they are here to act as general checks on the expected outputs of your functions</span>
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">DON&#39;T MODIFY ANYTHING IN THIS CELL THAT IS BELOW THIS LINE</span>
 <span class="sd">&quot;&quot;&quot;</span>
@@ -14008,6 +14049,33 @@ out = output[:, -1]</code></pre>
 </div>
 </div>
 
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>IOPub data rate exceeded.
+The notebook server will temporarily stop sending output
+to the client in order to avoid crashing it.
+To change this limit, set the config variable
+`--NotebookApp.iopub_data_rate_limit`.
+
+Current values:
+NotebookApp.iopub_data_rate_limit=1000000.0 (bytes/sec)
+NotebookApp.rate_limit_window=3.0 (secs)
+
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
@@ -14107,95 +14175,95 @@ out = output[:, -1]</code></pre>
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>Training for 15 epoch(s)...
-Epoch:    1/15    Loss: 4.9065687059164045
+Epoch:    1/15    Loss: 4.921280359864235
 
-Epoch:    1/15    Loss: 4.35075683426857
+Epoch:    1/15    Loss: 4.487116629123688
 
-Epoch:    1/15    Loss: 4.199369018435478
+Epoch:    1/15    Loss: 4.346966417908669
 
-Epoch:    2/15    Loss: 4.012872207923625
+Epoch:    2/15    Loss: 4.103077273691652
 
-Epoch:    2/15    Loss: 3.9184628801345824
+Epoch:    2/15    Loss: 3.9311106650829317
 
-Epoch:    2/15    Loss: 3.905764074087143
+Epoch:    2/15    Loss: 3.902425466299057
 
-Epoch:    3/15    Loss: 3.7846768772855035
+Epoch:    3/15    Loss: 3.7931065968127715
 
-Epoch:    3/15    Loss: 3.7373591775894166
+Epoch:    3/15    Loss: 3.7107219350337983
 
-Epoch:    3/15    Loss: 3.745392553925514
+Epoch:    3/15    Loss: 3.700881482243538
 
-Epoch:    4/15    Loss: 3.6435030612450894
+Epoch:    4/15    Loss: 3.620994079711261
 
-Epoch:    4/15    Loss: 3.6163033921718597
+Epoch:    4/15    Loss: 3.567436210036278
 
-Epoch:    4/15    Loss: 3.6465968697071074
+Epoch:    4/15    Loss: 3.569621068477631
 
-Epoch:    5/15    Loss: 3.5577082022868973
+Epoch:    5/15    Loss: 3.511606120870506
 
-Epoch:    5/15    Loss: 3.530443486213684
+Epoch:    5/15    Loss: 3.462151505947113
 
-Epoch:    5/15    Loss: 3.5559591511487962
+Epoch:    5/15    Loss: 3.4627388553619385
 
-Epoch:    6/15    Loss: 3.480310749148391
+Epoch:    6/15    Loss: 3.4241690574651136
 
-Epoch:    6/15    Loss: 3.463273624777794
+Epoch:    6/15    Loss: 3.382931255221367
 
-Epoch:    6/15    Loss: 3.4959371891021727
+Epoch:    6/15    Loss: 3.3820478318929674
 
-Epoch:    7/15    Loss: 3.4169125145796215
+Epoch:    7/15    Loss: 3.354791663479187
 
-Epoch:    7/15    Loss: 3.4118699799776078
+Epoch:    7/15    Loss: 3.318444802045822
 
-Epoch:    7/15    Loss: 3.4415108317136767
+Epoch:    7/15    Loss: 3.3151865235567093
 
-Epoch:    8/15    Loss: 3.363011983397353
+Epoch:    8/15    Loss: 3.304138213948153
 
-Epoch:    8/15    Loss: 3.364942510843277
+Epoch:    8/15    Loss: 3.2693353575468063
 
-Epoch:    8/15    Loss: 3.39096772146225
+Epoch:    8/15    Loss: 3.2639406471252443
 
-Epoch:    9/15    Loss: 3.323749355853869
+Epoch:    9/15    Loss: 3.26007089096113
 
-Epoch:    9/15    Loss: 3.318351709604263
+Epoch:    9/15    Loss: 3.2257150621414183
 
-Epoch:    9/15    Loss: 3.3624219596385956
+Epoch:    9/15    Loss: 3.2229188059568403
 
-Epoch:   10/15    Loss: 3.2907191439082863
+Epoch:   10/15    Loss: 3.221397560347046
 
-Epoch:   10/15    Loss: 3.2842884763479234
+Epoch:   10/15    Loss: 3.1885236485004427
 
-Epoch:   10/15    Loss: 3.331652785539627
+Epoch:   10/15    Loss: 3.1891737649440763
 
-Epoch:   11/15    Loss: 3.2602771561167465
+Epoch:   11/15    Loss: 3.1871659460193023
 
-Epoch:   11/15    Loss: 3.258405139565468
+Epoch:   11/15    Loss: 3.1567729266881943
 
-Epoch:   11/15    Loss: 3.304277743220329
+Epoch:   11/15    Loss: 3.157068465590477
 
-Epoch:   12/15    Loss: 3.2369037161133596
+Epoch:   12/15    Loss: 3.1616428011633726
 
-Epoch:   12/15    Loss: 3.2384677577018737
+Epoch:   12/15    Loss: 3.1278424319028852
 
-Epoch:   12/15    Loss: 3.272191368460655
+Epoch:   12/15    Loss: 3.1289124748706816
 
-Epoch:   13/15    Loss: 3.2086455583492084
+Epoch:   13/15    Loss: 3.133174084942523
 
-Epoch:   13/15    Loss: 3.2095326595306397
+Epoch:   13/15    Loss: 3.099983673095703
 
-Epoch:   13/15    Loss: 3.263569313049316
+Epoch:   13/15    Loss: 3.0992217787504197
 
-Epoch:   14/15    Loss: 3.19587459504785
+Epoch:   14/15    Loss: 3.107306366538552
 
-Epoch:   14/15    Loss: 3.1920852292776107
+Epoch:   14/15    Loss: 3.079942942619324
 
-Epoch:   14/15    Loss: 3.2424879578351975
+Epoch:   14/15    Loss: 3.0769339575767516
 
-Epoch:   15/15    Loss: 3.1789738613975373
+Epoch:   15/15    Loss: 3.0849564162196836
 
-Epoch:   15/15    Loss: 3.180666390657425
+Epoch:   15/15    Loss: 3.0622307008504865
 
-Epoch:   15/15    Loss: 3.217735058069229
+Epoch:   15/15    Loss: 3.054893449783325
 
 </pre>
 </div>
@@ -14240,7 +14308,7 @@ Epoch:   15/15    Loss: 3.217735058069229
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><strong>Answer:</strong></p>
-<p>From the Udacity course videos, I realized that embedding_dim is typically between 200 and 300. It is also advisable to use 2 or 3 n_layers. As hidden_dimension&gt;embedding_dim, I set the hidden dimension as 250. I tried to train my network with a learning rate of 0.01, but the network wasn't learning (overshooting?). With 0.001, the network was able to lower the loss and, therefore, to learn. and to reach a loss of about 3.2. I could eventually increase the number of epochs in order to decrease the loss value.</p>
+<p>From the Udacity course videos, I realized that embedding_dim is typically between 200 and 300. It is also advisable to use 2 or 3 n_layers. As hidden_dimension&gt;embedding_dim, I set the hidden dimension as 250. I tried to train my network with a learning rate of 0.01, but the network wasn't learning (overshooting?). With 0.001, the network was able to lower the loss and, therefore, to learn. and to reach a loss of about 3.05. I could eventually increase the number of epochs in order to decrease the loss value.</p>
 
 </div>
 </div>
@@ -14259,12 +14327,11 @@ Epoch:   15/15    Loss: 3.217735058069229
 <div class="prompt input_prompt">In&nbsp;[17]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Copying the contents of RNN to prevent the </span>
-<span class="c1"># &quot;AttributeError: Can&#39;t get attribute &#39;RNN&#39; on &lt;module &#39;__main__&#39;&gt;&quot; in the next cell</span>
-<span class="c1"># See https://discuss.pytorch.org/t/error-loading-saved-model/8371/4</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1">#I had to copy the definition of the RNN class to avoid the following error:</span>
+<span class="c1"># &quot;AttributeError: Can&#39;t get attribute &#39;RNN&#39; on &lt;module &#39;__main__&#39;&gt;&quot;</span>
+
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
-
 
 <span class="k">class</span> <span class="nc">RNN</span><span class="p">(</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
     
@@ -14278,20 +14345,19 @@ Epoch:   15/15    Loss: 3.217735058069229
 <span class="sd">        :param dropout: dropout to add in between LSTM/GRU layers</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">RNN</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        
-        <span class="c1"># define embedding layer        </span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
-        
-        <span class="c1">## Define the LSTM</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-        
+        <span class="c1"># TODO: Implement function</span>
         <span class="c1"># set class variables</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span> <span class="o">=</span> <span class="n">output_size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span> <span class="o">=</span> <span class="n">hidden_dim</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span> <span class="o">=</span> <span class="n">n_layers</span>
         
-        <span class="c1"># Define the final, fully-connected output layer</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>
+        <span class="c1"># define model layers</span>
+        <span class="c1"># embedding layer        </span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Embedding</span><span class="p">(</span><span class="n">vocab_size</span><span class="p">,</span> <span class="n">embedding_dim</span><span class="p">)</span>
+        <span class="c1"># LSTM layer</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">LSTM</span><span class="p">(</span><span class="n">embedding_dim</span><span class="p">,</span> <span class="n">hidden_dim</span><span class="p">,</span> <span class="n">n_layers</span><span class="p">,</span> <span class="n">dropout</span><span class="o">=</span><span class="n">dropout</span><span class="p">,</span> <span class="n">batch_first</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="c1"># fully connected layer (final layer)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fc</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">Linear</span><span class="p">(</span><span class="n">hidden_dim</span><span class="p">,</span> <span class="n">output_size</span><span class="p">)</span>      
     
     <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nn_input</span><span class="p">,</span> <span class="n">hidden</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -14301,27 +14367,20 @@ Epoch:   15/15    Loss: 3.217735058069229
 <span class="sd">        :return: Two Tensors, the output of the neural network and the latest hidden state</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># TODO: Implement function   </span>
-        <span class="n">batch_size</span> <span class="o">=</span> <span class="n">nn_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-
-        <span class="c1"># embeddings and lstm_out</span>
-        <span class="n">embeds</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">nn_input</span><span class="p">)</span>
-        <span class="n">lstm_out</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embeds</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
-    
-        <span class="c1"># stack up lstm outputs</span>
-        <span class="n">lstm_out</span> <span class="o">=</span> <span class="n">lstm_out</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span>
         
-        <span class="c1"># dropout and fully-connected layer</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">lstm_out</span><span class="p">)</span>
+        <span class="n">batch_length</span> <span class="o">=</span> <span class="n">nn_input</span><span class="o">.</span><span class="n">size</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># embeddings</span>
+        <span class="n">embeddings</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">embedding</span><span class="p">(</span><span class="n">nn_input</span><span class="p">)</span>
+        <span class="c1"># lstm_out</span>
+        <span class="n">lstm_out</span><span class="p">,</span> <span class="n">hidden</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lstm</span><span class="p">(</span><span class="n">embeddings</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fc</span><span class="p">(</span><span class="n">lstm_out</span><span class="o">.</span><span class="n">contiguous</span><span class="p">()</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">))</span>
         
-        <span class="c1"># reshape into (batch_size, seq_length, output_size)</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)</span>
-        <span class="c1"># get last batch</span>
-        <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="p">[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-
-        <span class="k">return</span> <span class="n">out</span><span class="p">,</span> <span class="n">hidden</span>
-    
-    
-    <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">):</span>
+        <span class="c1"># get last batch (with reshaping)</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">batch_length</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">output_size</span><span class="p">)[:,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="c1"># return one batch of output word scores and the hidden state</span>
+        <span class="k">return</span> <span class="n">output</span><span class="p">,</span> <span class="n">hidden</span>
+        
+    <span class="k">def</span> <span class="nf">init_hidden</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">):</span>
         <span class="sd">&#39;&#39;&#39;</span>
 <span class="sd">        Initialize the hidden state of an LSTM/GRU</span>
 <span class="sd">        :param batch_size: The batch_size of the hidden state</span>
@@ -14329,22 +14388,17 @@ Epoch:   15/15    Loss: 3.217735058069229
 <span class="sd">        &#39;&#39;&#39;</span>
         <span class="c1"># Implement function</span>
         
-        <span class="c1"># initialize hidden state with zero weights, and move to GPU if available</span>
+        <span class="c1"># initializing hidden state with zero weights</span>
+        <span class="n">weights</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">data</span>
         
-        <span class="n">weight</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span><span class="o">.</span><span class="n">data</span>
-        
+        <span class="c1">#move to GPU (if available)</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">train_on_gpu</span><span class="p">):</span>
-            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span>
-                  <span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">())</span>
+            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">(),</span>
+                  <span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">()</span><span class="o">.</span><span class="n">cuda</span><span class="p">())</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">(),</span>
-                      <span class="n">weight</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">())</span>
-        
+            <span class="n">hidden</span> <span class="o">=</span> <span class="p">(</span><span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">(),</span>
+                      <span class="n">weights</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_layers</span><span class="p">,</span> <span class="n">batch_length</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden_dim</span><span class="p">)</span><span class="o">.</span><span class="n">zero_</span><span class="p">())</span>
         <span class="k">return</span> <span class="n">hidden</span>
-            
-
-    <span class="c1">#def init_hidden(self, batch_size):</span>
-     <span class="c1">#   return self.init_hidden(batch_size)</span>
 </pre></div>
 
     </div>
@@ -14512,7 +14566,7 @@ Epoch:   15/15    Loss: 3.217735058069229
 
 
 <div class="output_subarea output_stream output_stderr output_text">
-<pre>/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py:47: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
+<pre>/opt/conda/lib/python3.6/site-packages/ipykernel_launcher.py:46: UserWarning: RNN module weights are not part of single contiguous chunk of memory. This means they need to be compacted at every call, possibly greatly increasing memory usage. To compact weights again call flatten_parameters().
 </pre>
 </div>
 </div>
@@ -14523,39 +14577,37 @@ Epoch:   15/15    Loss: 3.217735058069229
 
 
 <div class="output_subarea output_stream output_stdout output_text">
-<pre>jerry:&#34; and you were supposed to see him.
+<pre>jerry:.
 
-elaine: well, you know, i don&#39;t know, i was wondering, i just wanted to see the movie..
+elaine: what is that noise?
 
-george: well...
+elaine: what?
 
-elaine: ramirez!
+jerry: i was trying to buy this one--
 
-george: sendrax.
+hoyt: you dont think that you have any time controlling murder of a bubble- talker. the jury, the whole history- horn jet. suzie, massachusetts! no no no no no no no no no, it says to me.
 
-jerry: monsieur.
+jerry: you know, you were going to wear it. jackie&#39;s district clowns.
 
-elaine: monsieur!
+george: oh. yeah!
 
-george: i don&#39;t know. i can&#39;t believe it. i was wondering... i don&#39;t want to see the guy, i don&#39;t have any money.
+hoyt: so donald, what is that?
 
-elaine: oh, well, you know, i&#39;m not going to be a couple of weeks.
+elaine: oh. i know what this means, you were going to the bathroom?
 
-jerry: you know, the whole thing is in this leotard.
+hoyt: no, you are not ready.
 
-george:(laughs) oh, no. i can&#39;t do it!(leaves)
-
-george: you got that straight?
-
-george: yeah. i don&#39;t want it, i didn&#39;t even have a job.
-
-george:(to jerry) what happened?
-
-jerry: what?
-
-jerry:(pointing at her) yeah.
+george: what do you think?
 
 george: what?
+
+jerry: i don&#39;t know, she doesn&#39;t have the incident.
+
+george: i know what the hell is the nature of it?
+
+hoyt: well, we were going to be in the library cop.
+
+steinbrenner: you think i could be the
 </pre>
 </div>
 </div>
